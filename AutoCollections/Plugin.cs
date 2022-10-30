@@ -189,7 +189,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 		Logger.Debug("Found movie {0} ({1}) with {2} separate versions - (re)grouping them.", collection.Key, collection.First().Name, num);
         
         bool result = false;
-		if (num > 1 && isStrm == false)
+		if (num > 1)
 		{
 			_libraryManager.MergeItems(collection.ToArray());
 		}
