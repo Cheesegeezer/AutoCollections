@@ -26,25 +26,25 @@
                 var page = view;
 
                 ApiClient.getPluginConfiguration(CollectionsConfigurationPage.pluginId).then(function (config) {
-                    $('#chkDoNotChangeLockedItems', page).checked(config.DoNotChangeLockedItems || false).checkboxradio("refresh");
+                    view.querySelector('#chkDoNotChangeLockedItems', page).checked(config.DoNotChangeLockedItems || false).checkboxradio("refresh");
 
                     Dashboard.hideLoadingMsg();
                 });
                 
                 loading.show();
                 
-                $('.collectionsConfigurationPage').on('pageinit', function (event) {
+                view.querySelector('.collectionsConfigurationPage').on('pageinit', function (event) {
                     console.log("pageinit");
                     var page = view;
 
-                    $('#collectionsConfigurationForm', page).on('submit', function (e) {
+                    view.querySelector('#collectionsConfigurationForm', page).on('submit', function (e) {
 
                         Dashboard.showLoadingMsg();
 
                         var form = this;
 
                         ApiClient.getPluginConfiguration(CollectionsConfigurationPage.pluginId).then(function (config) {
-                            config.DoNotChangeLockedItems = $('#chkDoNotChangeLockedItems', form).checked();
+                            config.DoNotChangeLockedItems = view.querySelector('#chkDoNotChangeLockedItems', form).checked();
                             ApiClient.updatePluginConfiguration(CollectionsConfigurationPage.pluginId, config).then(Dashboard.processPluginConfigurationUpdateResult);
                         });
                         // Disable default form submission
