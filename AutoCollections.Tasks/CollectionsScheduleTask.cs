@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Configuration;
+using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 
@@ -23,17 +25,31 @@ namespace AutoCollections.Tasks
 
         private static readonly object _scanLock = new object();
         public static CollectionsScheduleTask Instance { get; private set; }
+        
+        private MetadataConfiguration _metadataConfig;
 
         private ILogger Logger { get; }
 
-        public CollectionsScheduleTask(ILibraryManager libraryManager, ILogManager logManager)
+        public CollectionsScheduleTask(ILibraryManager libraryManager, ILogManager logManager, MetadataConfiguration metadataConfig)
         {
             _libraryManager = libraryManager;
+            _metadataConfig = metadataConfig;
             Logger = logManager.GetLogger(Plugin.Instance.Name);
         }
 
+        private bool IgnoreLockedItems(BaseItem item)
+        {
+            PluginConfiguration config = Plugin.Instance.Configuration;
+            if(!config.DoNotChangeLockedItems)
+            {
+                return false;
+            }
+            return !item.IsLocked;
+        }
         public async Task Execute(CancellationToken cancellationToken, IProgress<double> progress)
         {
+
+            
             //Plugin plugin = this;
             lock (_scanLock)
             {
@@ -46,7 +62,7 @@ namespace AutoCollections.Tasks
             Logger.Info("Executing Automatic Collections creation.  Searching distinct movies with separated versions, DoNotChangeLockedMovies = '{0}'", Plugin.Instance.Configuration.DoNotChangeLockedItems);
             
             IEnumerable<BaseItem> items = from i in GetAllItems(typeof(Movie))
-                                          where (int)i.LocationType == 0 && i.MediaType == "Video" && i.Path != null && !i.IsVirtualItem && i.GetTopParent() != null && !(i.Parent.GetParent() is BoxSet) && !i.Path.EndsWith(".strm")
+                                          where (int)i.LocationType == 0 && i.MediaType == "Video" && i.Path != null && !i.IsVirtualItem && i.GetTopParent() != null && !(i.Parent.GetParent() is BoxSet) && !i.Path.EndsWith(".strm") && IgnoreLockedItems(i)
                                           select i;
             int num = items.Count();
             int num2 = (from i in items
@@ -93,8 +109,7 @@ namespace AutoCollections.Tasks
                         {
                             var libraryOptions = _libraryManager.GetLibraryOptions(item); //we need to pass in lib options for the item in the GetMediaSources method.
                             var mediaSources = item.GetMediaSources(true, false, libraryOptions); //There are all the media sources attached to this item.
-
-
+                            
                             Logger.Debug("Checking Item File {0}", item.Path);
 
                             bool isStrm = Path.GetExtension(item.Path).Equals(".strm", StringComparison.InvariantCultureIgnoreCase);
@@ -105,7 +120,6 @@ namespace AutoCollections.Tasks
                                 Logger.Debug("isSTRM file = {0}", isStrm.ToString());
 
                             }
-
                             else
                             {
                                 Logger.Info("AutoCollections is happy to continue processing {0}", item.Path);

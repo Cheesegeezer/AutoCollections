@@ -55,12 +55,9 @@ public class ServerEntryPoint : IServerEntryPoint, IDisposable
 
     public void Run()
     {
-        LibraryManager.ItemAdded += libraryManager_ItemAdded;
-        LibraryManager.ItemUpdated += libraryManager_ItemAdded;
-        if (Plugin.Instance.Configuration.NeedsUpdate)
-        {
-            CollectionsScheduleTask.Instance.Execute(CancellationToken.None, new Progress<double>()).ConfigureAwait(continueOnCapturedContext: false);
-        }
+        //LibraryManager.ItemAdded += libraryManager_ItemAdded;
+        //LibraryManager.ItemUpdated += libraryManager_ItemAdded;
+        
     }
 
     public void Dispose()
