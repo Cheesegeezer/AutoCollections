@@ -1,0 +1,31 @@
+﻿<div data-role="page" style="align-items: center; margin: auto;" class="type-interior pluginConfigurationPage libraryFileOrganizerLogPage AutoCollectionsConfigurationPage" data-require="emby-button,emby-input,emby-select,emby-toggle,emby-collapse" data-controller="__plugin/AutoCollectionsConfigurationPageJS">
+	<div class="content-primary">
+		<div class="verticalSection verticalSection">
+			<div class="sectionTitleContainer sectionTitleContainer-cards align-items-center">
+
+				<h2>Auto Movie Version Grouping</h2>
+				<h3>This plug-in will group your movies based on their TMDB movie id, regardless of the naming and storage place.</h3>
+
+				<div class="paperList checkboxList checkboxList-paperList">
+					<h2 class="checkboxListLabel">Settings</h2>
+					<label>
+						<input is="emby-toggle" type="checkbox" class="chkDoNotChangeLockedItems" />
+						<span class="toggleButtonLabel mdl-switch__label">Ignore if Movie is Locked</span>
+					</label>
+					<div class="fieldDescription">Do not proceed with grouping if the Movie is Locked in the Metadata Editor</div>
+				</div>
+				
+				<h3>Auto Movie Version Grouping will keep movie groups updated, Please run the Scheduled Task or set up a Task Trigger.</h3>
+				<hr/>
+				<p style="margin: 2em 0;">
+					You also can manually force a refresh with this button.
+				</p>
+				<div>
+					<button is="emby-button" type="button" class="btnUpdate raised button-submit block">Update Movie Version Collections</button>
+
+				</div>
+
+			</div>
+			</div>
+	</div>
+</div>

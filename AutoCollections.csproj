@@ -1,24 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>AutoCollections</AssemblyName>
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup>
-    <LangVersion>Preview</LangVersion>
+    <LangVersion>10</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RootNamespace />
-    <AssemblyVersion></AssemblyVersion>
-    <FileVersion></FileVersion>
+    <Version></Version>
+    <AssemblyVersion>1.0.0.4</AssemblyVersion>
+    <FileVersion>1.0.0.4</FileVersion>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\AutoCollectionsConfigurationPage.html" />
-    <EmbeddedResource Include="Configuration\AutoCollectionsConfigurationPage.js" />
+    <Compile Remove="AutoCollections.Api\CollectionsHandler.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="thumb.jpg" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Configuration\AGConfigurationPage.html" />
+    <EmbeddedResource Include="Configuration\AGConfigurationPage.js" />
+    <EmbeddedResource Include="thumb.jpg" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="MediaBrowser.Server.Core" Version="4.7.7" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;C:\Users\davey\Documents\GitHub\AutoCollections\bin\Debug\netstandard2.0\AutoCollections.dll&quot; &quot;C:\Users\davey\AppData\Roaming\Emby-Server\programdata\plugins\&quot; /Y" />
