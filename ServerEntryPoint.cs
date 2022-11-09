@@ -14,7 +14,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Tasks;
 
-namespace AutoCollections.AutoCollections;
+namespace AutoCollections;
 
 public class ServerEntryPoint : IServerEntryPoint, IDisposable
 {
@@ -72,23 +72,23 @@ public class ServerEntryPoint : IServerEntryPoint, IDisposable
         var item = e.Item;
         if (item.GetType().Name == nameof(Movie))
         {
-           Log.Info("Library Event Detected for Auto Version Grouping but will wait 1 min", null);
-                await Task.Delay(TimeSpan.FromSeconds(60)).ConfigureAwait(false);
+            Log.Info("Library Event Detected for Auto Version Grouping but will wait 1 min", null);
+            await Task.Delay(TimeSpan.FromSeconds(60)).ConfigureAwait(false);
 
-                try
-                {
-                    Log.Info("New Library Event --- Running AutoGroup Task for {0}", item.Name);
-                    await this.TaskManager.Execute(
-                        this.TaskManager.ScheduledTasks.FirstOrDefault(t => t.Name == "Auto Version Grouping"),
-                        new TaskOptions()).ConfigureAwait(false);
+            try
+            {
+                Log.Info("New Library Event --- Running AutoGroup Task for {0}", item.Name);
+                await TaskManager.Execute(
+                    TaskManager.ScheduledTasks.FirstOrDefault(t => t.Name == "Auto Version Grouping"),
+                    new TaskOptions()).ConfigureAwait(false);
 
-                }
-                catch (Exception ex)
-                {
-                    //Catch so we can continue
-                }
+            }
+            catch (Exception ex)
+            {
+                //Catch so we can continue
+            }
         }
     }
 }
-	
+
 
