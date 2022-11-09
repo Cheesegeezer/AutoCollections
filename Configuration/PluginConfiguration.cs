@@ -1,6 +1,6 @@
 using MediaBrowser.Model.Plugins;
 
-namespace Configuration;
+namespace AutoCollections.Configuration;
 
 public class PluginConfiguration : BasePluginConfiguration
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Configuration;
+using AutoCollections.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Controller.Library;
@@ -10,7 +10,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 
-namespace AutoCollections;
+namespace AutoCollections.AutoCollections;
 
 public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages, IHasThumbImage
 {
@@ -45,7 +45,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages, IHasThumbIm
         new PluginPageInfo
         {
             //html File
-            Name = "AutoCollectionsConfigurationPage",
+            Name = "AGConfigurationPage",
             EmbeddedResourcePath = GetType().Namespace + ".Configuration.AGConfigurationPage.html",
             EnableInMainMenu = true,
             DisplayName = "Auto-Version-Grouping",
@@ -53,7 +53,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages, IHasThumbIm
         new PluginPageInfo
         {
             //JS File
-            Name = "AutoCollectionsConfigurationPageJS",
+            Name = "AGConfigurationPageJS",
             EmbeddedResourcePath = GetType().Namespace + ".Configuration.AGConfigurationPage.js",
         }
     };

@@ -5,12 +5,11 @@
     <LangVersion>10</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <Version></Version>
-    <AssemblyVersion>1.0.0.4</AssemblyVersion>
-    <FileVersion>1.0.0.4</FileVersion>
+    <AssemblyVersion>1.0.0.6</AssemblyVersion>
+    <FileVersion>1.0.0.6</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="AutoCollections.Api\CollectionsHandler.cs" />
-    <Compile Remove="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="thumb.jpg" />
@@ -24,10 +23,7 @@
   
   <ItemGroup>
     <PackageReference Include="MediaBrowser.Server.Core" Version="4.7.7" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Properties\" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;C:\Users\davey\Documents\GitHub\AutoCollections\bin\Debug\netstandard2.0\AutoCollections.dll&quot; &quot;C:\Users\davey\AppData\Roaming\Emby-Server\programdata\plugins\&quot; /Y" />

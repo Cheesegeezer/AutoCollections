@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using AutoCollections.Tasks;
-using Configuration;
+using System.Threading.Tasks;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Security;
 using MediaBrowser.Controller.Collections;
@@ -12,10 +11,10 @@ using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Tasks;
 
-namespace AutoCollections;
+namespace AutoCollections.AutoCollections;
 
 public class ServerEntryPoint : IServerEntryPoint, IDisposable
 {
@@ -34,30 +33,32 @@ public class ServerEntryPoint : IServerEntryPoint, IDisposable
     public ICollectionManager CollectionManager { get; private set; }
 
     public IProviderManager ProviderManager { get; private set; }
+    private ILogger Log { get; }
 
     private ISecurityManager PluginSecurityManager { get; set; }
 
     private IApplicationPaths ApplicationPaths { get; set; }
 
+    private readonly ITaskManager TaskManager;
+
     public ServerEntryPoint(ILibraryManager libraryManager, IProviderManager providerManager, ILogManager logManager,
         ISecurityManager securityManager, ILibraryMonitor libraryMonitor, ICollectionManager collectionManager,
-        IApplicationPaths applicationPaths)
+        IApplicationPaths applicationPaths, ITaskManager taskManager)
     {
         LibraryManager = libraryManager;
         LibraryMonitor = libraryMonitor;
         PluginSecurityManager = securityManager;
         CollectionManager = collectionManager;
         ApplicationPaths = applicationPaths;
+        TaskManager = taskManager;
         ProviderManager = providerManager;
-        Plugin.Logger = logManager.GetLogger(Plugin.Instance.Name);
+        Log = logManager.GetLogger(Plugin.Instance.Name);
         Instance = this;
     }
 
     public void Run()
     {
-        //LibraryManager.ItemAdded += libraryManager_ItemAdded;
-        //LibraryManager.ItemUpdated += libraryManager_ItemAdded;
-        
+        LibraryManager.ItemAdded += libraryManager_ItemAdded;
     }
 
     public void Dispose()
@@ -66,61 +67,26 @@ public class ServerEntryPoint : IServerEntryPoint, IDisposable
         LibraryMonitor?.Dispose();
     }
 
-
-    public async void OnConfigurationUpdated(PluginConfiguration oldConfig, PluginConfiguration newConfig)
+    private async void libraryManager_ItemAdded(object sender, ItemChangeEventArgs e)
     {
-        if (oldConfig.DoNotChangeLockedItems != newConfig.DoNotChangeLockedItems)
+        var item = e.Item;
+        if (item.GetType().Name == nameof(Movie))
         {
-            await CollectionsScheduleTask.Instance.Execute(CancellationToken.None, new Progress<double>())
-                .ConfigureAwait(continueOnCapturedContext: false);
-        }
-    }
+           Log.Info("Library Event Detected for Auto Version Grouping but will wait 1 min", null);
+                await Task.Delay(TimeSpan.FromSeconds(60)).ConfigureAwait(false);
 
-    private void libraryManager_ItemAdded(object sender, ItemChangeEventArgs e)
-    {
-        lock (_newlyAddedItems)
-        {
-            if (((e != null) ? e.Item : null) != null)
-            {
-                _newlyAddedItems.Add(e.Item);
-                if (NewItemTimer == null)
+                try
                 {
-                    NewItemTimer = new Timer(NewItemTimerCallback, null, 15000, -1);
-                }
-                else
-                {
-                    NewItemTimer.Change(15000, -1);
-                }
-            }
-        }
-    }
+                    Log.Info("New Library Event --- Running AutoGroup Task for {0}", item.Name);
+                    await this.TaskManager.Execute(
+                        this.TaskManager.ScheduledTasks.FirstOrDefault(t => t.Name == "Auto Version Grouping"),
+                        new TaskOptions()).ConfigureAwait(false);
 
-    private async void NewItemTimerCallback(object state)
-    {
-        List<BaseItem> list;
-        lock (_newlyAddedItems)
-        {
-            list = _newlyAddedItems.Distinct().ToList();
-            _newlyAddedItems.Clear();
-            NewItemTimer.Dispose();
-            NewItemTimer = null;
-        }
-        try
-        {
-            if (list.Count == 0)
-            {
-                Plugin.Logger.Info("AutoCollections: NewItemTimerCallback - no new items registered!", null);
-            }
-            else if ((from i in list.OfType<Movie>()
-                where i.GetProviderId((MetadataProviders)3) != null && (int)i.LocationType == 0 && i.MediaType == "Video" && !(i.Parent.GetParent() is BoxSet)
-                select i).Take(5).ToList().Count != 0)
-            {
-                await CollectionsScheduleTask.Instance.Execute(CancellationToken.None, new Progress<double>()).ConfigureAwait(continueOnCapturedContext: false);
-            }
-        }
-        catch (Exception ex)
-        {
-            Plugin.Logger.Error("AutoCollections: NewItemTimerCallback - fatal error: {0}", ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    //Catch so we can continue
+                }
         }
     }
 }

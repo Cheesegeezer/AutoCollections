@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace AutoCollections;
+namespace AutoCollections.AutoCollections;
 
 public static class Extensions
 {
