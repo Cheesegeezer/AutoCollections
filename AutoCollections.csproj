@@ -5,25 +5,20 @@
     <LangVersion>10</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <Version></Version>
-    <AssemblyVersion>1.0.0.4</AssemblyVersion>
-    <FileVersion>1.0.0.4</FileVersion>
+    <AssemblyVersion>1.0.0.6</AssemblyVersion>
+    <FileVersion>1.0.0.6</FileVersion>
   </PropertyGroup>
+ 
   <ItemGroup>
-    <Compile Remove="AutoCollections.Api\CollectionsHandler.cs" />
-    <Compile Remove="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="thumb.jpg" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Include="Configuration\AGConfigurationPage.html" />
-    <EmbeddedResource Include="Configuration\AGConfigurationPage.js" />
+    <EmbeddedResource Include="Config\AGConfigPage.html" />
+    <EmbeddedResource Include="Config\AGConfigPage.js" />
     <EmbeddedResource Include="thumb.jpg" />
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="MediaBrowser.Server.Core" Version="4.7.7" />
+    <PackageReference Include="MediaBrowser.Common" Version="4.7.9" />
+    <PackageReference Include="MediaBrowser.Server.Core" Version="4.7.9" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
   
   <ItemGroup>

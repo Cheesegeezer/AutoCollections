@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AutoCollections.AutoCollections.Utility;
+namespace AutoCollections.Extensions;
 
 public static class Extensions
 {

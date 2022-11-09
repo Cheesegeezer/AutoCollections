@@ -2,14 +2,19 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Model.System;
 
-namespace AutoCollections.Tasks;
+namespace AutoCollections.AutoCollections.Tasks;
 
-public class CreateCollectionsTask  /*: ILibraryPostScanTask*/
+public class CreateCollectionsTask : ILibraryPostScanTask
 {
-	/*public Task Run(IProgress<double> progress, CancellationToken cancellationToken)
+    private readonly CollectionsScheduleTask _task;
+
+    public CreateCollectionsTask(CollectionsScheduleTask task)
+    {
+        _task = task;
+    }
+    public Task Run(IProgress<double> progress, CancellationToken cancellationToken)
 	{
-		return CollectionsScheduleTask.Instance.Execute(cancellationToken, progress);
-	}*/
+		return _task.Execute(cancellationToken, progress);
+	}
 }
