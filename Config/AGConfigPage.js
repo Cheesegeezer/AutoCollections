@@ -18,10 +18,9 @@
 
                 loading.show();
 
-                var config = await ApiClient.getPluginConfiguration(pluginId);
-
                 ApiClient.getPluginConfiguration(pluginId).then(function (config) {
                     view.querySelector('.chkDoNotChangeLockedItems').checked = config.DoNotChangeLockedItems || false;
+                    view.querySelector('.chkMergeAcrossLibraries').checked = config.MergeAcrossLibraries || false;
 
                 });
 
@@ -33,6 +32,18 @@
                         e.preventDefault();
                         ApiClient.getPluginConfiguration(pluginId).then((config) => {
                             config.DoNotChangeLockedItems = dontChange.checked;
+                            ApiClient.updatePluginConfiguration(pluginId, config).then((r) => {
+                                Dashboard.processPluginConfigurationUpdateResult(r);
+                            });
+                        });
+                    });
+
+                var crossLibrary = view.querySelector(".chkMergeAcrossLibraries");
+                crossLibrary.addEventListener('change',
+                    (e) => {
+                        e.preventDefault();
+                        ApiClient.getPluginConfiguration(pluginId).then((config) => {
+                            config.MergeAcrossLibraries = crossLibrary.checked;
                             ApiClient.updatePluginConfiguration(pluginId, config).then((r) => {
                                 Dashboard.processPluginConfigurationUpdateResult(r);
                             });

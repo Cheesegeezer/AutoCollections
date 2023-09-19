@@ -10,9 +10,12 @@ public class PluginConfiguration : BasePluginConfiguration
 
     public bool DoNotChangeLockedItems { get; set; }
 
+    public bool MergeAcrossLibraries { get; set; }
+
     public PluginConfiguration()
     {
         DoNotChangeLockedItems = false;
+        MergeAcrossLibraries = true;
         MinimumMembers = 2;
         NeedsUpdate = true;
     }
