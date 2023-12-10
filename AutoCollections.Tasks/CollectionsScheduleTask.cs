@@ -1,4 +1,4 @@
-﻿using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Tasks;
 using System;
@@ -35,6 +35,7 @@ namespace AutoCollections.AutoCollections.Tasks
 
         private async Task GetItemsToProcess()
         {
+            _itemsList.Clear();
             PluginConfiguration config = Plugin.Instance.Configuration;
             Log.Info("Getting items to process", null);
             var stopWatch = new Stopwatch();
