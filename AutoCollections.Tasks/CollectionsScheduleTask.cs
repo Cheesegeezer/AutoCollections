@@ -97,27 +97,27 @@ namespace AutoCollections.AutoCollections.Tasks
                                             select i;
             int num = items.Count();
             int num2 = (from i in items
-                        where i.Item2.ProviderIds != null && i.Item2.GetProviderId((MetadataProviders)3) != null
-                        group i by i.Item1 + i.Item2.GetProviderId((MetadataProviders)3) into i
+                        where i.Item2.ProviderIds != null && i.Item2.GetProviderId(MetadataProviders.Tmdb) != null
+                        group i by i.Item1 + i.Item2.GetProviderId(MetadataProviders.Tmdb) into i
                         where i.Count() > 1
                         select i).ToList().Count + (from i in items
-                                                    where i.Item2.ProviderIds != null && i.Item2.GetProviderId((MetadataProviders)2) != null 
-                                                        && i.Item2.GetProviderId((MetadataProviders)3) == null
-                                                    group i by i.Item1 + i.Item2.GetProviderId((MetadataProviders)2) into i
+                                                    where i.Item2.ProviderIds != null && i.Item2.GetProviderId(MetadataProviders.Imdb) != null 
+                                                        && i.Item2.GetProviderId(MetadataProviders.Tmdb) == null
+                                                    group i by i.Item1 + i.Item2.GetProviderId(MetadataProviders.Imdb) into i
                                                     where i.Count() > 1
                                                     select i).ToList().Count;
             Log.Info("Found {0} of {1} movies that have multiple versions ...", num2, num);
             Log.Info("Searching distinct tmdb movies ...", null);
             List<IGrouping<string, BaseItem>> list = (from i in items
-                                                      where i.Item2.ProviderIds != null && i.Item2.GetProviderId((MetadataProviders)3) != null
-                                                      group i.Item2 by i.Item1 + i.Item2.GetProviderId((MetadataProviders)3).ToString() into j
+                                                      where i.Item2.ProviderIds != null && i.Item2.GetProviderId(MetadataProviders.Tmdb) != null
+                                                      group i.Item2 by i.Item1 + i.Item2.GetProviderId(MetadataProviders.Tmdb).ToString() into j
                                                       where j.Count() != 1 + j.OfType<Video>().Sum(video => video.GetAlternateVersionIds().Count) / j.Count()
                                                       select j).ToList();
             Log.Info("Searching distinct imdb movies ...", null);
             List<IGrouping<string, BaseItem>> list2 = (from i in items
-                                                        where i.Item2.ProviderIds != null && i.Item2.GetProviderId((MetadataProviders)3) == null 
-                                                            && i.Item2.GetProviderId((MetadataProviders)2) != null
-                                                        group i.Item2 by i.Item1 + i.Item2.GetProviderId((MetadataProviders)2) into j
+                                                        where i.Item2.ProviderIds != null && i.Item2.GetProviderId(MetadataProviders.Tmdb) == null 
+                                                            && i.Item2.GetProviderId(MetadataProviders.Imdb) != null
+                                                        group i.Item2 by i.Item1 + i.Item2.GetProviderId(MetadataProviders.Imdb) into j
                                                         where j.Count() != 1 + j.OfType<Video>().Sum(video => video.GetAlternateVersionIds().Count) / j.Count()
                                                         select j).ToList();
             Log.Info("Found {0} tmdb and {1} imdb version movie lists, merging them to process ...", list.Count, list2.Count);
