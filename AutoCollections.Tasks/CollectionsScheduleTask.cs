@@ -1,4 +1,4 @@
-using MediaBrowser.Controller.Entities;
+﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Tasks;
 using System;
@@ -57,7 +57,7 @@ namespace AutoCollections.AutoCollections.Tasks
                 }
                 var queryList = new InternalItemsQuery
                 {
-                    Recursive = false,
+                    Recursive = true,
                     ParentIds = new[] { fldr.InternalId },
                     IncludeItemTypes = new[] { "Movie" },
                     IsVirtualItem = false,
