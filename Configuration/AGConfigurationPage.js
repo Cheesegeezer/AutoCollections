@@ -12,21 +12,20 @@
             });
             Dashboard.alert("Movie Version Collections Refresh Started");
         }
-        
+
         return function (view) {
             view.addEventListener('viewshow', async () => {
 
                 loading.show();
 
-                var config = await ApiClient.getPluginConfiguration(pluginId);
-                
                 ApiClient.getPluginConfiguration(pluginId).then(function (config) {
                     view.querySelector('.chkDoNotChangeLockedItems').checked = config.DoNotChangeLockedItems || false;
-                    
+                    view.querySelector('.chkMergeAcrossLibraries').checked = config.MergeAcrossLibraries || false;
+
                 });
 
                 loading.hide();
-                
+
                 var dontChange = view.querySelector(".chkDoNotChangeLockedItems");
                 dontChange.addEventListener('change',
                     (e) => {
@@ -37,14 +36,26 @@
                                 Dashboard.processPluginConfigurationUpdateResult(r);
                             });
                         });
-                    });   
+                    });
+
+                var crossLibrary = view.querySelector(".chkMergeAcrossLibraries");
+                crossLibrary.addEventListener('change',
+                    (e) => {
+                        e.preventDefault();
+                        ApiClient.getPluginConfiguration(pluginId).then((config) => {
+                            config.MergeAcrossLibraries = crossLibrary.checked;
+                            ApiClient.updatePluginConfiguration(pluginId, config).then((r) => {
+                                Dashboard.processPluginConfigurationUpdateResult(r);
+                            });
+                        });
+                    });
 
                 var update = view.querySelector(".btnUpdate");
                 update.addEventListener('click', e => {
                     e.preventDefault();
                     refreshCollections();
                 });
-                
+
                 document.querySelector('.pageTitle').innerHTML = "Auto Version Grouping";
 
             });
